@@ -74,7 +74,7 @@ export default {
   methods:{
   async  getData(){
       // Формируем url для GET запроса
-      let url = `http://api.openweathermap.org/data/2.5/weather?q=${this.city}&lang=${this.lang}&units=metric&appid=${this.apiKey}`
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&lang=${this.lang}&units=metric&appid=${this.apiKey}`
       // console.log(url)
       axios.get(url).then(res => {
         // console.log(res.data);
