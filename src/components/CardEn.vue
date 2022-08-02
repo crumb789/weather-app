@@ -14,7 +14,7 @@
                         blue:  toUpTemp > 5 && toUpTemp < 18,
                         yellow: toUpTemp > 17 && toUpTemp < 28,
                         red: toUpTemp > 27}"  class="weather-temp title is-1">
-                        {{toUpTemp}}°C
+                        {{toUpTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>         
                     <div class="weather-descr ">
                         {{descrTemp}}
@@ -37,7 +37,7 @@
                         </div>
                     </div>    
                     <div class="weather-temp-feel">
-                        Feel like {{feelLike}}°C
+                        Feel like {{feelLike}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>    
                     <div class="weather-wind">
                         <span class="mr-2">Wind {{info.wind['speed']}} km/h 
@@ -51,10 +51,10 @@
                 </div> 
                 <div class="wrapper-more animate__animated animate__flipInX" v-if="moreInfoOpen">
                     <div class="weather-temp-min ">
-                        Min {{minTemp}}°C
+                        Min {{minTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>
                     <div class="weather-temp-max">
-                        Vax {{maxTemp}}°C
+                        Vax {{maxTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>
                     <div class="weather-pressure">
                         Pressure {{info.main['pressure']}} hPa 
@@ -63,11 +63,14 @@
                         Humidity {{info.main['humidity']}} %  
                     </div>
                     <div class="weather-visibility">
-                        Visibility {{visability}} km.  
+                        Visibility {{visability}} km 
                     </div>
                 </div>
             </div>
             <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
+            <div class="units" @click="$emit('change-units')">
+                {{units}}
+            </div>
         </div>
         
     </div>
@@ -81,6 +84,9 @@ export default {
     props:{
         info:{
             type: Object
+        },
+        units:{
+            type: String
         }
     },
     data() {
@@ -152,7 +158,7 @@ export default {
 .weather-temp-feel{
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
 }
 .weather-wind{
     display: flex;
@@ -162,13 +168,18 @@ export default {
 .weather-temp{
     display: flex;
     align-items: flex-end;
-    justify-content: space-around;
+    justify-content: center;
 
     
 }
 .weather-descr-icon 
     i {
     font-size: 45px;
+}
+.units{
+    position: absolute;
+    top: 10px;
+    opacity: 0.5;
 }
 .yellow{
     color: #f9bc0f;

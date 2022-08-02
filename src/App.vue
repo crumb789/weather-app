@@ -11,15 +11,21 @@
         @change-lang='changeLang'>
       </head-comp>
 
-      <form-new-city @new-city-req="newCityReq">
+      <form-new-city :lang='lang'
+       @new-city-req="newCityReq">
       </form-new-city>
 
-      <card-city :info='info' v-if="cardLoad && lang === 'ru' "
-        @update-info='getData'>
+      <card-city :info='info' :units='units'
+
+        v-if="cardLoad && lang === 'ru' "
+        @update-info='getData'
+        @change-units='changeUnits'>
       </card-city>
 
-      <card-en :info='info' v-if="cardLoad && lang === 'en' "
-        @update-info='getData'>
+      <card-en :info='info' :units='units'
+        v-if="cardLoad && lang === 'en' "
+        @update-info='getData'
+        @change-units='changeUnits'>
       </card-en>
 
 
@@ -77,13 +83,14 @@ export default {
       info: [],
       cardLoad: false,
       lang: 'ru',
-      errorShow: false
+      errorShow: false,
+      units: 'metric'
     }
   },
   methods:{
   async  getData(){
       // Формируем url для GET запроса
-      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&lang=${this.lang}&units=metric&appid=${this.apiKey}`
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
       // console.log(url)
       axios.get(url,{
         
@@ -104,6 +111,10 @@ export default {
     changeLang(){
       (this.lang === 'ru') ? this.lang = 'en' : this. lang = 'ru'
       this.getData()
+    },
+    changeUnits(){
+      (this.units === 'metric') ? this.units = 'imperial' : this.units = 'metric'
+      this.getData()
     }
   },
   computed:{
@@ -118,7 +129,10 @@ export default {
 
     if(localStorage.city){
             this.city = JSON.parse(localStorage.city)
-        }
+    }
+    if(localStorage.lang){
+            this.lang = JSON.parse(localStorage.lang)
+    }
 
   },
   watch:{
@@ -128,6 +142,13 @@ export default {
           },
           deep: true
         },
+      lang:{
+        handler(newLang){
+            localStorage.lang = JSON.stringify(newLang)
+        },
+        deep: true
+      },
+        
 
   }
 }
