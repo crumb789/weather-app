@@ -18,24 +18,24 @@
                     </div>         
                     <div class="weather-descr ">
                         {{descrTemp}}
-                        <div v-if="descrTemp === 'облачно с прояснениями' || descrTemp === 'broken clouds'" class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Облачно с прояснениями' || descrTemp === 'Broken clouds'" class="weather-descr-icon">
                             <i class="bi bi-cloud-sun"></i>  
                         </div>
-                        <div v-if="descrTemp === 'переменная облачность' || descrTemp === 'scattered clouds' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Переменная облачность' || descrTemp === 'Scattered clouds' " class="weather-descr-icon">
                             <i class="bi bi-clouds"></i>  
                         </div> 
-                        <div v-if="descrTemp === 'небольшой проливной дождь' 
-                        || descrTemp === 'light intensity shower rain' 
-                        || descrTemp === 'дождь' 
-                        || descrTemp === 'moderate rain' 
-                        || descrTemp === 'небольшой дождь' 
-                        || descrTemp === 'light rain'" class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Небольшой проливной дождь' 
+                        || descrTemp === 'Light intensity shower rain' 
+                        || descrTemp === 'Дождь' 
+                        || descrTemp === 'Moderate rain' 
+                        || descrTemp === 'Небольшой дождь' 
+                        || descrTemp === 'Light rain'" class="weather-descr-icon">
                             <i class="bi bi-cloud-drizzle"></i>  
                         </div> 
-                        <div v-if="descrTemp === 'пасмурно' || descrTemp === 'overcast clouds'" class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Пасмурно' || descrTemp === 'Overcast clouds'" class="weather-descr-icon">
                             <i class="bi bi-cloudy"></i>
                         </div> 
-                        <div v-if="descrTemp === 'ясно' || descrTemp === 'clear sky'" class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Ясно' || descrTemp === 'Clear sky'" class="weather-descr-icon">
                             <i class="bi bi-brightness-high"></i>
                         </div>
                     </div>    
@@ -43,10 +43,12 @@
                         Ощущается как {{feelLike}}°C
                     </div>    
                     <div class="weather-wind">
-                        <span class="mr-2">Ветер {{info.wind['speed']}} км/ч </span>
-                        <svg :style="{transform: degArrowWind, fontSize: 20 + 'px', color: '#0065bb'}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class=" bi bi-arrow-right" viewBox="0 0 16 16">
+                        <span class="mr-2">Ветер {{info.wind['speed']}} км/ч 
+                            <svg :style="{transform: degArrowWind, fontSize: 20 + 'px', color: '#0065bb'}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class=" bi bi-arrow-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
                         </svg> 
+                        </span>
+                        
                         
                     </div> 
                 </div> 
@@ -64,7 +66,7 @@
                         Влажность {{info.main['humidity']}} %  
                     </div>
                     <div class="weather-visibility">
-                        Видимость {{info.visibility}} метров   
+                        Видимость {{visability}} км.  
                     </div>
                 </div>
             </div>
@@ -128,7 +130,14 @@ export default {
         },
         descrTemp(){
             let descr = this.info.weather[0].description
-            return descr
+            descr = descr.split('')
+            let a = String(descr[0]).toUpperCase()
+            descr.splice(0,1)
+            descr.unshift(a)
+            return descr.join('')
+        },
+        visability(){
+            return this.info.visibility / 1000
         }
     }
 }
@@ -141,7 +150,17 @@ export default {
 .wrapper-temp{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 100px 20px;
+    grid-template-rows: 100px 40px;
+}
+.weather-temp-feel{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.weather-wind{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 .weather-temp{
     display: flex;
