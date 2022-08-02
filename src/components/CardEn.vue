@@ -18,29 +18,29 @@
                     </div>         
                     <div class="weather-descr ">
                         {{descrTemp}}
-                        <div v-if="descrTemp === 'Облачно с прояснениями' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Broken clouds'" class="weather-descr-icon">
                             <i class="bi bi-cloud-sun"></i>  
                         </div>
-                        <div v-if="descrTemp === 'Переменная облачность' || descrTemp === 'Небольшая облачность' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Scattered clouds' || descrTemp === 'Few clouds' " class="weather-descr-icon">
                             <i class="bi bi-clouds"></i>  
                         </div> 
-                        <div v-if="descrTemp === 'Небольшой проливной дождь'
-                        || descrTemp === 'Дождь' 
-                        || descrTemp === 'Небольшой дождь' " class="weather-descr-icon">
+                        <div v-if=" descrTemp === 'Light intensity shower rain' 
+                        || descrTemp === 'Moderate rain' 
+                        || descrTemp === 'Light rain'" class="weather-descr-icon">
                             <i class="bi bi-cloud-drizzle"></i>  
                         </div> 
-                        <div v-if="descrTemp === 'Пасмурно' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Overcast clouds'" class="weather-descr-icon">
                             <i class="bi bi-cloudy"></i>
                         </div> 
-                        <div v-if="descrTemp === 'Ясно' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Clear sky'" class="weather-descr-icon">
                             <i class="bi bi-brightness-high"></i>
                         </div>
                     </div>    
                     <div class="weather-temp-feel">
-                        Ощущается как {{feelLike}}°C
+                        Feel like {{feelLike}}°C
                     </div>    
                     <div class="weather-wind">
-                        <span class="mr-2">Ветер {{info.wind['speed']}} км/ч 
+                        <span class="mr-2">Wind {{info.wind['speed']}} km/h 
                             <svg :style="{transform: degArrowWind, fontSize: 20 + 'px', color: '#0065bb'}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class=" bi bi-arrow-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
                         </svg> 
@@ -51,19 +51,19 @@
                 </div> 
                 <div class="wrapper-more animate__animated animate__flipInX" v-if="moreInfoOpen">
                     <div class="weather-temp-min ">
-                        Мин {{minTemp}}°C
+                        Min {{minTemp}}°C
                     </div>
                     <div class="weather-temp-max">
-                        Макс {{maxTemp}}°C
+                        Vax {{maxTemp}}°C
                     </div>
                     <div class="weather-pressure">
-                        Давление {{info.main['pressure']}} мбар 
+                        Pressure {{info.main['pressure']}} hPa 
                     </div>
                     <div class="weather-humidity">
-                        Влажность {{info.main['humidity']}} %  
+                        Humidity {{info.main['humidity']}} %  
                     </div>
                     <div class="weather-visibility">
-                        Видимость {{visability}} км.  
+                        Visibility {{visability}} km.  
                     </div>
                 </div>
             </div>
@@ -77,7 +77,7 @@
 
 <script>
 export default {
-    name:'card-city-ru',
+    name:'card-city-en',
     props:{
         info:{
             type: Object
@@ -205,11 +205,4 @@ export default {
 
 /* color: #f9bc0f;  if > 18 < 27 */
 
-
-
-
 </style>
-
-
-
-

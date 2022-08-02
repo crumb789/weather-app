@@ -14,9 +14,14 @@
       <form-new-city @new-city-req="newCityReq">
       </form-new-city>
 
-      <card-city :info='info' v-if="cardLoad"
+      <card-city :info='info' v-if="cardLoad && lang === 'ru' "
         @update-info='getData'>
       </card-city>
+
+      <card-en :info='info' v-if="cardLoad && lang === 'en' "
+        @update-info='getData'>
+      </card-en>
+
 
       <error-card v-if="errorShow">
       </error-card>
@@ -43,6 +48,9 @@ import FormNewCity from '@/components/FormNewCity.vue'
 import PlaceholderComp from '@/components/PlaceholderComp.vue'
 import ErrorCard from '@/components/ErrorCard.vue'
 import CityLoad from '@/components/CityLoad.vue'
+import CardEn from '@/components/CardEn.vue'
+
+
 
 
 import axios from 'axios'
@@ -56,7 +64,8 @@ export default {
     FormNewCity,
     PlaceholderComp,
     ErrorCard,
-    CityLoad
+    CityLoad,
+    CardEn
   },
   data(){
     return{
@@ -94,6 +103,7 @@ export default {
     },
     changeLang(){
       (this.lang === 'ru') ? this.lang = 'en' : this. lang = 'ru'
+      this.getData()
     }
   },
   computed:{
