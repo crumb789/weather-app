@@ -8,14 +8,23 @@
 
             <div class="weather ">
                 <div class="wrapper-temp animate__animated animate__flipInX" v-if="!moreInfoOpen" >
-                    <div :class="{
+                    <div v-if="units === 'metric'" :class="{
                         verycold: toUpTemp > -100 && toUpTemp < -10,
                         soblue: toUpTemp > -11 && toUpTemp < 6,
                         blue:  toUpTemp > 5 && toUpTemp < 18,
                         yellow: toUpTemp > 17 && toUpTemp < 28,
                         red: toUpTemp > 27}"  class="weather-temp title is-1">
-                        {{toUpTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
-                    </div>         
+                        {{toUpTemp}}<span v-if="units === 'metric'">°C</span>
+                    </div>
+                    <div v-else  :class="{
+                        verycold: toUpTemp > -100 && toUpTemp < 14,
+                        soblue: toUpTemp > 13 && toUpTemp < 51,
+                        blue:  toUpTemp > 41 && toUpTemp < 64,
+                        yellow: toUpTemp > 63 && toUpTemp < 82,
+                        red: toUpTemp > 81}"  class="weather-temp title is-1">
+                        {{toUpTemp}}<span>°F</span>
+                    </div>
+
                     <div class="weather-descr ">
                         {{descrTemp}}
                         <div v-if="descrTemp === 'Облачно с прояснениями' " class="weather-descr-icon">
@@ -68,7 +77,7 @@
                 </div>
             </div>
             <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
-            <div class="units" @click="$emit('change-units')">
+            <div :style="{cursor: 'pointer'}" class="units" @click="$emit('change-units')">
                 {{units}}
             </div>
         </div>

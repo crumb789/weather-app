@@ -78,7 +78,7 @@
                 </div>
             </div>
             <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
-            <div class="units" @click="$emit('change-units')">
+            <div :style="{cursor: 'pointer'}" class="units" @click="$emit('change-units')">
                 {{units}}
             </div>
         </div>

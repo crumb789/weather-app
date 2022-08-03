@@ -2,7 +2,7 @@
   <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
   <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
 
-  <section class=" animate__animated animate__fadeIn">
+  <section class="main animate__animated animate__fadeIn">
       <div class="container">
 
       <head-comp class="fixed" 
@@ -43,6 +43,11 @@
     </div>
   </section>
 
+  <footer>
+      <footer-comp>
+      </footer-comp>
+  </footer>
+
   
 </template>
 
@@ -54,6 +59,8 @@ import PlaceholderComp from '@/components/PlaceholderComp.vue'
 import ErrorCard from '@/components/ErrorCard.vue'
 import CityLoad from '@/components/CityLoad.vue'
 import CardEn from '@/components/CardEn.vue'
+import FooterComp from '@/components/FooterComp.vue'
+
 
 
 
@@ -70,7 +77,8 @@ export default {
     PlaceholderComp,
     ErrorCard,
     CityLoad,
-    CardEn
+    CardEn,
+    FooterComp
   },
   data(){
     return{
@@ -164,7 +172,9 @@ export default {
 
 }
 
-
+.main{
+  min-height: 80vh;
+}
 
 
 
