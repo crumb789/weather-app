@@ -3,7 +3,6 @@
   <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
 
   <section class=" animate__animated animate__fadeIn">
-
       <div class="container">
 
       <head-comp class="fixed" 

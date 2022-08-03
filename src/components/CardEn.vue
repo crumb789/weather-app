@@ -8,14 +8,24 @@
 
             <div class="weather ">
                 <div class="wrapper-temp animate__animated animate__flipInX" v-if="!moreInfoOpen" >
-                    <div :class="{
+                    <div v-if="units === 'metric'" :class="{
                         verycold: toUpTemp > -100 && toUpTemp < -10,
                         soblue: toUpTemp > -11 && toUpTemp < 6,
                         blue:  toUpTemp > 5 && toUpTemp < 18,
                         yellow: toUpTemp > 17 && toUpTemp < 28,
                         red: toUpTemp > 27}"  class="weather-temp title is-1">
-                        {{toUpTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
-                    </div>         
+                        {{toUpTemp}}<span v-if="units === 'metric'">°C</span>
+                    </div>
+                    <div v-else  :class="{
+                        verycold: toUpTemp > -100 && toUpTemp < 14,
+                        soblue: toUpTemp > 13 && toUpTemp < 51,
+                        blue:  toUpTemp > 41 && toUpTemp < 64,
+                        yellow: toUpTemp > 63 && toUpTemp < 82,
+                        red: toUpTemp > 81}"  class="weather-temp title is-1">
+                        {{toUpTemp}}<span>°F</span>
+                    </div>
+
+
                     <div class="weather-descr ">
                         {{descrTemp}}
                         <div v-if="descrTemp === 'Broken clouds'" class="weather-descr-icon">
@@ -54,7 +64,7 @@
                         Min {{minTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>
                     <div class="weather-temp-max">
-                        Vax {{maxTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
+                        Max {{maxTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>
                     <div class="weather-pressure">
                         Pressure {{info.main['pressure']}} hPa 
