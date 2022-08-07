@@ -2,7 +2,7 @@
   <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
   <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
 
-  <section class="main animate__animated animate__fadeIn">
+  <section v-if="!loadIcon" class="main animate__animated animate__fadeIn">
       <div class="container">
 
       <head-comp class="fixed" 
@@ -27,6 +27,8 @@
         @change-units='changeUnits'>
       </card-en>
 
+      
+
 
       <error-card v-if="errorShow">
       </error-card>
@@ -43,7 +45,12 @@
     </div>
   </section>
 
-  <footer>
+  <section v-if="loadIcon">
+    <loader-card @load-icon-close='loadIconClose'>
+    </loader-card>
+  </section>
+
+  <footer v-if="!loadIcon">
       <footer-comp>
       </footer-comp>
   </footer>
@@ -60,6 +67,7 @@ import ErrorCard from '@/components/ErrorCard.vue'
 import CityLoad from '@/components/CityLoad.vue'
 import CardEn from '@/components/CardEn.vue'
 import FooterComp from '@/components/FooterComp.vue'
+import LoaderCard from '@/components/LoaderCard.vue'
 
 
 
@@ -78,7 +86,8 @@ export default {
     ErrorCard,
     CityLoad,
     CardEn,
-    FooterComp
+    FooterComp,
+    LoaderCard
   },
   data(){
     return{
@@ -86,12 +95,14 @@ export default {
       // city: 'санкт петербург',
       // city: 'kazan',
       // city: 'Moscow',
+      loadIcon: true,
       city: null,
       info: [],
       cardLoad: false,
       lang: 'ru',
       errorShow: false,
-      units: 'metric'
+      units: 'metric',
+
     }
   },
   methods:{
@@ -122,6 +133,9 @@ export default {
     changeUnits(){
       (this.units === 'metric') ? this.units = 'imperial' : this.units = 'metric'
       this.getData()
+    },
+    loadIconClose(){
+      this.loadIcon = false
     }
   },
   computed:{
@@ -140,6 +154,9 @@ export default {
     if(localStorage.lang){
             this.lang = JSON.parse(localStorage.lang)
     }
+    if(sessionStorage.loadIcon){
+            this.loadIcon = JSON.parse(sessionStorage.loadIcon)
+    }
 
   },
   watch:{
@@ -149,13 +166,18 @@ export default {
           },
           deep: true
         },
-      lang:{
-        handler(newLang){
-            localStorage.lang = JSON.stringify(newLang)
-        },
+    lang:{
+      handler(newLang){
+          localStorage.lang = JSON.stringify(newLang)
+      },
         deep: true
       },
-        
+    loadIcon:{
+      handler(value){
+        sessionStorage.loadIcon = JSON.stringify(value)
+      },
+      deep:true
+    }
 
   }
 }
@@ -175,7 +197,11 @@ export default {
 .main{
   min-height: 80vh;
 }
-
+footer{
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
 
 
 

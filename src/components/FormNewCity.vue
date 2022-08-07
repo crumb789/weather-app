@@ -4,9 +4,9 @@
             <input v-if="lang === 'ru'" v-model="newCity" :style="{width: 80 + '%'}" class="input is-info" type="text" placeholder="Город..."> 
             <input v-else v-model="newCity" :style="{width: 80 + '%'}" class="input is-info" type="text" placeholder="City..."> 
 
-            <button :disabled='!newCity' class="button is-info is-light ml-2" type='submit'>
+            <!-- <button :disabled='!newCity' class="button is-info is-light ml-2" type='submit'>
                 <i class="bi bi-caret-down-fill"></i>
-            </button>
+            </button> -->
         </form>
     </div>
 </template>

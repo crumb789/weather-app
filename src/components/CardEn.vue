@@ -78,7 +78,7 @@
                 </div>
             </div>
             <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
-            <div :style="{cursor: 'pointer'}" class="units" @click="$emit('change-units')">
+            <div  class="units" @click="$emit('change-units')">
                 {{units}}
             </div>
         </div>
@@ -188,8 +188,9 @@ export default {
 }
 .units{
     position: absolute;
-    top: 10px;
+    bottom: 10px;
     opacity: 0.5;
+    cursor: pointer;
 }
 .yellow{
     color: #f9bc0f;
