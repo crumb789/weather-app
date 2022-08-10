@@ -43,6 +43,10 @@
                         </div> 
                         <div v-if="descrTemp === 'Ясно' " class="weather-descr-icon">
                             <i class="bi bi-brightness-high"></i>
+                            <i class="bi bi-cloud-lightning-rain"></i>
+                        </div>
+                        <div v-if="descrTemp === 'Гроза' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-lightning-rain"></i>
                         </div>
                     </div>    
                     <div class="weather-temp-feel">
