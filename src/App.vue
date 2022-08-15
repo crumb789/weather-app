@@ -199,7 +199,7 @@ export default {
 }
 footer{
     /* position: fixed; */
-    position: absolute;
+    /* position: absolute; */
     width: 100%;
     bottom: 0;
 }
