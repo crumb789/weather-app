@@ -195,10 +195,11 @@ export default {
 }
 
 .main{
-  min-height: 80vh;
+  min-height: 74vh;
 }
 footer{
-    position: fixed;
+    /* position: fixed; */
+    position: absolute;
     width: 100%;
     bottom: 0;
 }
