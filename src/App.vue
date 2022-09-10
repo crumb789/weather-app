@@ -11,7 +11,8 @@
       </head-comp>
 
       <form-new-city :lang='lang'
-       @new-city-req="newCityReq">
+       @new-city-req="newCityReq"
+       @get-location="getLocation">
       </form-new-city>
 
       <card-city :info='info' :units='units'
@@ -41,8 +42,11 @@
         @update-info='getData'>
       </city-load>
 
+      <loading-comp v-if="false">
+
+      </loading-comp>
       
-    </div>
+    </div>  
   </section>
 
   <section v-if="loadIcon">
@@ -68,6 +72,7 @@ import CityLoad from '@/components/CityLoad.vue'
 import CardEn from '@/components/CardEn.vue'
 import FooterComp from '@/components/FooterComp.vue'
 import LoaderCard from '@/components/LoaderCard.vue'
+import LoadingComp from '@/components/LoadingComp.vue'
 
 
 
@@ -87,16 +92,16 @@ export default {
     CityLoad,
     CardEn,
     FooterComp,
-    LoaderCard
+    LoaderCard,
+    LoadingComp
   },
   data(){
     return{
       apiKey: '93b55014fe1c000569089e576e885abf',
-      // city: 'санкт петербург',
-      // city: 'kazan',
-      // city: 'Moscow',
       loadIcon: true,
       city: null,
+      latitude: '',
+      longitude: '',
       info: [],
       cardLoad: false,
       lang: 'ru',
@@ -122,6 +127,33 @@ export default {
         this.errorShow = true
       }))
     },
+
+    getLocation(){
+      navigator.geolocation.getCurrentPosition(position => {
+          let lat = position.coords.latitude
+
+          this.latitude = lat
+          this.longitude = position.coords.longitude
+
+      })
+      
+      this.getDataFromLocation()
+    },
+
+  async  getDataFromLocation(){
+      let url = `https://api.openweathermap.org/data/2.5/weather?lat=59.89&lon=30.47&appid=${this.apiKey}&units=${this.units}&lang=${this.lang}`
+      
+
+      axios.get(url)
+            .then(res =>{
+              this.info = res.data
+              this.city = res.data.name
+                this.cardLoad = true
+
+            })
+    },
+
+
     newCityReq(newCity){
       this.city = newCity
       this.getData()
@@ -136,7 +168,14 @@ export default {
     },
     loadIconClose(){
       this.loadIcon = false
+    },
+    testLoad(){
+        navigator.geolocation.getCurrentPosition(position => {
+          console.log(position)
+        })
     }
+
+
   },
   computed:{
     cityChanged(){
@@ -158,6 +197,8 @@ export default {
             this.loadIcon = JSON.parse(sessionStorage.loadIcon)
     }
 
+
+    // this.testLoad()
   },
   watch:{
     city:{

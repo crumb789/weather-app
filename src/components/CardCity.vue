@@ -1,6 +1,11 @@
 <template>
     <div class="cardis  animate__animated animate__zoomIn">
+
+
         <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', height: 240 + 'px'}" >
+            <!-- <div class="divider" :style="{width: widthLine + '%'}">
+            </div> -->
+
             <div @click="$emit('update-info')" class="name title is-4">
                 {{info.name}} {{info.sys['country']}}
                 <i @click="updateTempLaunch" :style="{cursor: 'pointer'}" :class="{rotate: updateTemp}" class="bi bi-arrow-clockwise"></i>
@@ -47,6 +52,11 @@
                         <div v-if="descrTemp === 'Гроза' " class="weather-descr-icon">
                             <i class="bi bi-cloud-lightning-rain"></i>
                         </div>
+                        <div v-if="descrTemp === 'Плотный туман' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-fog"></i>
+                        </div>
+
+                        
                     </div>    
                     <div class="weather-temp-feel">
                         Ощущается как {{feelLike}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
@@ -153,7 +163,11 @@ export default {
         },
         visability(){
             return this.info.visibility / 1000
-        }
+        },
+        // widthLine(){
+            
+        //     return 100
+        // }
     }
 }
 </script>
@@ -161,6 +175,15 @@ export default {
 <style scoped>
 .box{
     margin: 0 auto;
+    position: relative;
+}
+.divider{
+    position: absolute;
+    display: block;
+    height: 1px;
+    background-color: #2d8d91;
+    top: 0;
+    left: 0;
 }
 .wrapper-temp{
     display: grid;

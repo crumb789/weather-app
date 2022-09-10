@@ -48,6 +48,9 @@
                         <div v-if="descrTemp === 'Thunderstorm' " class="weather-descr-icon">
                             <i class="bi bi-cloud-lightning-rain"></i>
                         </div>
+                        <div v-if="descrTemp === 'Fog' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-fog"></i>
+                        </div>
                     </div>    
                     <div class="weather-temp-feel">
                         Feel like {{feelLike}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
