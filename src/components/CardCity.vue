@@ -2,7 +2,7 @@
     <div class="cardis  animate__animated animate__zoomIn">
 
 
-        <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', height: 240 + 'px'}" >
+        <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px'}" >
             <!-- <div class="divider" :style="{width: widthLine + '%'}">
             </div> -->
 
@@ -87,6 +87,12 @@
                     <div class="weather-visibility">
                         Видимость {{visability}} км
                     </div>
+                    <div class="weather-latitude">
+                        Широта {{latitude}}
+                    </div>
+                    <div class="weather-longitude">
+                        Долгота {{longitude}}
+                    </div>
                 </div>
             </div>
             <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
@@ -164,6 +170,12 @@ export default {
         visability(){
             return this.info.visibility / 1000
         },
+        latitude(){
+            return this.info.coord.lat
+        },
+        longitude(){
+            return this.info.coord.lon
+        }
         // widthLine(){
             
         //     return 100

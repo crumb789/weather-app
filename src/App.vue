@@ -130,18 +130,16 @@ export default {
 
     getLocation(){
       navigator.geolocation.getCurrentPosition(position => {
-          let lat = position.coords.latitude
-
-          this.latitude = lat
+          this.latitude = position.coords.latitude
           this.longitude = position.coords.longitude
 
+          this.getDataFromLocation()
       })
       
-      this.getDataFromLocation()
     },
 
   async  getDataFromLocation(){
-      let url = `https://api.openweathermap.org/data/2.5/weather?lat=59.89&lon=30.47&appid=${this.apiKey}&units=${this.units}&lang=${this.lang}`
+      let url = `https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=${this.apiKey}&units=${this.units}&lang=${this.lang}`
       
 
       axios.get(url)

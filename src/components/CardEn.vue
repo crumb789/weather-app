@@ -1,6 +1,6 @@
 <template>
     <div class="cardis  animate__animated animate__zoomIn">
-        <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', height: 240 + 'px'}" >
+        <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px'}" >
             <div @click="$emit('update-info')" class="name title is-4">
                 {{info.name}} {{info.sys['country']}}
                 <i @click="updateTempLaunch" :style="{cursor: 'pointer'}" :class="{rotate: updateTemp}" class="bi bi-arrow-clockwise"></i>
@@ -81,6 +81,12 @@
                     <div class="weather-visibility">
                         Visibility {{visability}} km 
                     </div>
+                    <div class="weather-latitude">
+                        Latitude {{latitude}}
+                    </div>
+                    <div class="weather-longitude">
+                        Longitude {{longitude}}
+                    </div>
                 </div>
             </div>
             <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
@@ -157,6 +163,12 @@ export default {
         },
         visability(){
             return this.info.visibility / 1000
+        },
+        latitude(){
+            return this.info.coord.lat
+        },
+        longitude(){
+            return this.info.coord.lon
         }
     }
 }
