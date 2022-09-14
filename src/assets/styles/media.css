@@ -1,0 +1,56 @@
+
+  @media (min-width: 300px) {
+      #btn-prev{
+          top: 40%;
+          left: 5px;
+        }
+        #btn-next{
+            right: 5px;
+            top: 40%;
+        }
+    }
+    
+    @media (min-width: 575px) {
+      #btn-prev{
+          top: 40%;
+          left: 20%;
+        }
+        #btn-next{
+            top: 40%;
+            right: 20%;
+        }
+    }
+
+    @media (min-width: 768px) {
+        #btn-prev{
+            top: 40%;
+            left: 24%;
+          }
+          #btn-next{
+              top: 40%;
+              right: 24%;
+          }
+      }
+
+      @media (min-width: 991px) {
+        #btn-prev{
+            top: 40%;
+            left: 24%;
+          }
+          #btn-next{
+              top: 40%;
+              right: 24%;
+          }
+      }
+
+
+    @media (min-width: 1440px){
+        #btn-prev{
+            top: 40%;
+            left: 28%;
+          }
+          #btn-next{
+              top: 40%;
+              right: 28%;
+          }
+      }

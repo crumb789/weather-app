@@ -2,12 +2,12 @@
     <div class="cardis  animate__animated animate__zoomIn">
 
 
-        <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px'}" >
+        <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px', backgroundColor: '#f4fdfd'}" >
             <!-- <div class="divider" :style="{width: widthLine + '%'}">
             </div> -->
 
             <div @click="$emit('update-info')" class="name title is-4">
-                {{info.name}} {{info.sys['country']}}
+                <i class="bi bi-geo-alt"></i>    {{info.name}} {{info.sys['country']}}
                 <i @click="updateTempLaunch" :style="{cursor: 'pointer'}" :class="{rotate: updateTemp}" class="bi bi-arrow-clockwise"></i>
             </div>
 
@@ -184,10 +184,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style >
 .box{
     margin: 0 auto;
     position: relative;
+}
+.name  :first-child{
+    color: #1ea28f;
 }
 .divider{
     position: absolute;

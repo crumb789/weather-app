@@ -15,18 +15,66 @@
        @get-location="getLocation">
       </form-new-city>
 
-      <card-city :info='info' :units='units'
+
+<!-- ru card geo-->
+      <card-city :info='geoInfo' :units='units'            
 
         v-if="cardLoad && lang === 'ru' "
-        @update-info='getData'
+        @update-info='getDataFromLocation'
         @change-units='changeUnits'>
-      </card-city>
-
-      <card-en :info='info' :units='units'
+      </card-city>   
+<!-- en card  geo-->
+      <card-en :info='geoInfo' :units='units'
         v-if="cardLoad && lang === 'en' "
-        @update-info='getData'
+        @update-info='getDataFromLocation'
         @change-units='changeUnits'>
       </card-en>
+    <!-- load last location   -->
+
+      <city-load v-if="!cardLoad && false" 
+        :cityChanged="cityChanged"
+        @update-info='getDataFromLocation'>
+      </city-load>
+
+      <div class="card-wrapper m-4" v-if="false">
+              <cards-list-ru   :units='units'
+                v-for="item in infoList" :key="item"
+                :item='item'
+                @update-info='getData'
+                @change-units='changeUnits'>
+
+              </cards-list-ru>
+      </div>
+        
+      <cards-list-ru v-if="currentCard"  :units='units'
+              :currentCard='currentCard'
+              @delete-this-card='deleteCardFromInfoList'
+              @prev-slide='prevCard'
+              @next-slide="nextCard"
+              @update-info='getData(currentCard.name)'
+              @change-units='changeUnits'>
+              <button @click="prevCard" v-show="infoList.length > 1"
+                id="btn-prev" class="button is-rounded is-ghost">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button @click="nextCard" v-show="infoList.length > 1"
+                id="btn-next" class="button is-rounded is-ghost ">
+                  <i class="bi bi-chevron-right"></i>
+              </button>
+
+
+              <slider-dots-list>
+                  <slider-dot v-for="(item, index) in infoList" 
+                  :key="item.id"
+                  :item='item'
+                  :index='index'
+                  :currentCard='currentCard'
+                  >
+
+                  </slider-dot>
+              </slider-dots-list>
+      </cards-list-ru>
+        
 
       
 
@@ -37,14 +85,10 @@
       <placeholderComp v-if="!city">
       </placeholderComp>
 
-      <city-load v-if="!cardLoad && city" 
-        :cityChanged="cityChanged"
-        @update-info='getData'>
-      </city-load>
+      
 
-      <loading-comp v-if="false">
 
-      </loading-comp>
+
       
     </div>  
   </section>
@@ -53,6 +97,7 @@
     <loader-card @load-icon-close='loadIconClose'>
     </loader-card>
   </section>
+
 
   <footer v-if="!loadIcon">
       <footer-comp>
@@ -72,8 +117,10 @@ import CityLoad from '@/components/CityLoad.vue'
 import CardEn from '@/components/CardEn.vue'
 import FooterComp from '@/components/FooterComp.vue'
 import LoaderCard from '@/components/LoaderCard.vue'
-import LoadingComp from '@/components/LoadingComp.vue'
+import CardsListRu from '@/components/CardsListRu.vue'
 
+import SliderDotsList from '@/components/UI/SliderDotsList.vue'
+import SliderDot from '@/components/UI/SliderDot.vue'
 
 
 
@@ -93,45 +140,74 @@ export default {
     CardEn,
     FooterComp,
     LoaderCard,
-    LoadingComp
+    CardsListRu,
+    SliderDotsList,
+    SliderDot
   },
   data(){
     return{
       apiKey: '93b55014fe1c000569089e576e885abf',
       loadIcon: true,
       city: null,
-      latitude: '',
-      longitude: '',
+      geoData: [ 
+        {
+          latitude: '',
+          longitude: '',
+        } 
+      ],
       info: [],
       cardLoad: false,
       lang: 'ru',
       errorShow: false,
       units: 'metric',
+      geoInfo: [],
+
+      infoList: [],
+      countCard: 0
 
     }
   },
   methods:{
-  async  getData(){
+  async  getData(city){
       // Формируем url для GET запроса
-      let url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
+      // city = this.city
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
       // console.log(url)
-      axios.get(url,{
-        
-      }).then(res => {
-        // console.log(res.data);
-        this.info = res.data
-        this.cardLoad = true
-        this.errorShow = false
-      }).catch((error=> {
-        console.log(error)
-        this.errorShow = true
-      }))
+      axios.get(url)
+            .then(res => {
+            console.log(res.data);
+            this.info = res.data
+                  
+              if(this.infoList.length == 0){
+                  this.infoList.push(this.info)
+              }
+              else {
+                let arrId = []
+                this.infoList.forEach(item => arrId.push(item.id))
+
+                if(arrId.includes(this.info.id)){
+                  return false
+                } else this.infoList.unshift(this.info)
+                this.countCard = 0
+                // console.log(arrId)
+              }
+              
+              
+              this.cardLoad = true
+              this.errorShow = false
+            }).catch((error=> {
+              console.log(error)
+              this.errorShow = true
+            }))
     },
 
     getLocation(){
       navigator.geolocation.getCurrentPosition(position => {
-          this.latitude = position.coords.latitude
-          this.longitude = position.coords.longitude
+          // this.latitude = position.coords.latitude
+          // this.longitude = position.coords.longitude
+          this.geoData[0].latitude = position.coords.latitude
+          this.geoData[0].longitude = position.coords.longitude
+
 
           this.getDataFromLocation()
       })
@@ -139,14 +215,17 @@ export default {
     },
 
   async  getDataFromLocation(){
-      let url = `https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=${this.apiKey}&units=${this.units}&lang=${this.lang}`
+    let lat = this.geoData[0].latitude
+    let lon = this.geoData[0].longitude
+      let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=${this.units}&lang=${this.lang}`
       
 
       axios.get(url)
             .then(res =>{
-              this.info = res.data
+              // this.info = res.data
               this.city = res.data.name
-                this.cardLoad = true
+              this.geoInfo = res.data
+              this.cardLoad = true
 
             })
     },
@@ -154,35 +233,56 @@ export default {
 
     newCityReq(newCity){
       this.city = newCity
-      this.getData()
+      this.getData(newCity)
     },
     changeLang(){
       (this.lang === 'ru') ? this.lang = 'en' : this. lang = 'ru'
-      this.getData()
+      // this.getData()
+      this.getDataFromLocation()
     },
     changeUnits(){
       (this.units === 'metric') ? this.units = 'imperial' : this.units = 'metric'
-      this.getData()
+      // this.getData()
+      this.getDataFromLocation()
+
+      
     },
     loadIconClose(){
       this.loadIcon = false
     },
-    testLoad(){
-        navigator.geolocation.getCurrentPosition(position => {
-          console.log(position)
-        })
-    }
 
+    deleteCardFromInfoList(id){
+      this.infoList = this.infoList.filter(item => item.id !== id)
+    },
+    prevCard(){
+      (this.countCard == 0) ? this.countCard = this.infoList.length - 1 : this.countCard--
+
+    },
+    nextCard(){
+     (this.countCard == this.infoList.length - 1) ? this.countCard = 0 : this.countCard++
+    }
 
   },
   computed:{
     cityChanged(){
       let name = String(this.city).toUpperCase()
       return name
+    },
+    currentCard(){
+      // console.log(this.infoList[this.countCard].id)
+      
+        return (this.infoList) ? this.infoList[this.countCard] : console.log('false')
     }
   },
   mounted(){
-    (this.city == null) ?  false : this.getData()
+    (this.city == null) ?  false : this.getData();
+
+    setTimeout(()=>{
+      if(this.geoData[0].latitude !== ''){
+        this.getDataFromLocation()
+      }  
+
+    }, 10)
     
 
     if(localStorage.city){
@@ -194,10 +294,15 @@ export default {
     if(sessionStorage.loadIcon){
             this.loadIcon = JSON.parse(sessionStorage.loadIcon)
     }
+    if(localStorage.geoData){
+      this.geoData = JSON.parse(localStorage.geoData)
+    }
+    if(localStorage.infoList){
+      this.infoList = JSON.parse(localStorage.infoList)
+    }
 
-
-    // this.testLoad()
   },
+
   watch:{
     city:{
           handler(newCity){
@@ -214,6 +319,18 @@ export default {
     loadIcon:{
       handler(value){
         sessionStorage.loadIcon = JSON.stringify(value)
+      },
+      deep:true
+    },
+    geoData: {
+      handler(newValue){
+        localStorage.geoData = JSON.stringify(newValue)
+      },
+      deep:true
+    },
+    infoList: {
+      handler(newValue){
+        localStorage.infoList = JSON.stringify(newValue)
       },
       deep:true
     }
@@ -236,6 +353,35 @@ export default {
 .main{
   min-height: 74vh;
 }
+.card-wrapper{
+  /* height: 290px; */
+  overflow: hidden;
+
+  position: relative;
+  /* width: 100%; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#btn-prev{
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  z-index: 10;
+  transform: translateY(-50%);
+}
+#btn-next{
+  position: absolute;
+  right: 5px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+
 footer{
     /* position: fixed; */
     /* position: absolute; */

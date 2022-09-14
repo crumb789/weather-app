@@ -1,9 +1,20 @@
 <template>
     <div class="cardis  animate__animated animate__zoomIn">
-        <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px', backgroundColor: '#f4fdfd' }" >
+        <slot></slot>
+        <div @click="mouseOver" class="box mt-4 " ref="card"
+            
+            :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px', cursor: 'pointer', transform: computedPos}" >
+            <!-- <div class="divider" :style="{width: widthLine + '%'}">
+            </div> -->
+
             <div @click="$emit('update-info')" class="name title is-4">
-                <i class="bi bi-geo-alt"></i>   {{info.name}} {{info.sys['country']}}
+                {{currentCard.name}} {{currentCard.sys['country']}}
                 <i @click="updateTempLaunch" :style="{cursor: 'pointer'}" :class="{rotate: updateTemp}" class="bi bi-arrow-clockwise"></i>
+                <div v-if="moreInfoOpen" 
+                    @click="$emit('delete-this-card', currentCard.id)"
+                    class="card-delete" title="Удалить" >
+                    <i class="bi bi-bookmark-check" :style="{color: '#7c7c7c'}"></i>
+                </div>
             </div>
 
             <div class="weather ">
@@ -25,38 +36,39 @@
                         {{toUpTemp}}<span>°F</span>
                     </div>
 
-
                     <div class="weather-descr ">
                         {{descrTemp}}
-                        <div v-if="descrTemp === 'Broken clouds'" class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Облачно с прояснениями' " class="weather-descr-icon">
                             <i class="bi bi-cloud-sun"></i>  
                         </div>
-                        <div v-if="descrTemp === 'Scattered clouds' || descrTemp === 'Few clouds' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Переменная облачность' || descrTemp === 'Небольшая облачность' " class="weather-descr-icon">
                             <i class="bi bi-clouds"></i>  
                         </div> 
-                        <div v-if=" descrTemp === 'Light intensity shower rain' 
-                        || descrTemp === 'Moderate rain' 
-                        || descrTemp === 'Light rain'" class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Небольшой проливной дождь'
+                        || descrTemp === 'Дождь' 
+                        || descrTemp === 'Небольшой дождь' " class="weather-descr-icon">
                             <i class="bi bi-cloud-drizzle"></i>  
                         </div> 
-                        <div v-if="descrTemp === 'Overcast clouds'" class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Пасмурно' " class="weather-descr-icon">
                             <i class="bi bi-cloudy"></i>
                         </div> 
-                        <div v-if="descrTemp === 'Clear sky'" class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Ясно' " class="weather-descr-icon">
                             <i class="bi bi-brightness-high"></i>
                         </div>
-                        <div v-if="descrTemp === 'Thunderstorm' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Гроза' " class="weather-descr-icon">
                             <i class="bi bi-cloud-lightning-rain"></i>
                         </div>
-                        <div v-if="descrTemp === 'Fog' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Плотный туман' " class="weather-descr-icon">
                             <i class="bi bi-cloud-fog"></i>
                         </div>
+
+                        
                     </div>    
                     <div class="weather-temp-feel">
-                        Feel like {{feelLike}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
+                        Ощущается как {{feelLike}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>    
                     <div class="weather-wind">
-                        <span class="mr-2">Wind {{info.wind['speed']}} km/h 
+                        <span class="mr-2">Ветер {{currentCard.wind['speed']}} км/ч 
                             <svg :style="{transform: degArrowWind, fontSize: 20 + 'px', color: '#0065bb'}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class=" bi bi-arrow-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
                         </svg> 
@@ -67,32 +79,34 @@
                 </div> 
                 <div class="wrapper-more animate__animated animate__flipInX" v-if="moreInfoOpen">
                     <div class="weather-temp-min ">
-                        Min {{minTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
+                        Мин {{minTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>
                     <div class="weather-temp-max">
-                        Max {{maxTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
+                        Макс {{maxTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>
                     <div class="weather-pressure">
-                        Pressure {{info.main['pressure']}} hPa 
+                        Давление {{currentCard.main['pressure']}} мбар 
                     </div>
                     <div class="weather-humidity">
-                        Humidity {{info.main['humidity']}} %  
+                        Влажность {{currentCard.main['humidity']}} %  
                     </div>
                     <div class="weather-visibility">
-                        Visibility {{visability}} km 
+                        Видимость {{visability}} км
                     </div>
                     <div class="weather-latitude">
-                        Latitude {{latitude}}
+                        Широта {{latitude}}
                     </div>
                     <div class="weather-longitude">
-                        Longitude {{longitude}}
+                        Долгота {{longitude}}
                     </div>
                 </div>
             </div>
             <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
-            <div  class="units" @click="$emit('change-units')">
+            <div class="units" @click="$emit('change-units')">
                 {{units}}
             </div>
+            <!-- {{posX}}  {{posY}}
+            {{computedPos}} -->
         </div>
         
     </div>
@@ -102,9 +116,9 @@
 
 <script>
 export default {
-    name:'card-city-en',
+    name:'card-list-ru',
     props:{
-        info:{
+        currentCard:{
             type: Object
         },
         units:{
@@ -121,7 +135,12 @@ export default {
                 cursor: 'pointer'
             },
             moreInfoOpen: false,
-            updateTemp: false
+            updateTemp: false,
+            posX: undefined,
+            posY: undefined,
+            prevCard: {
+                transform: `translateX(100px)`
+            }
         }
     },
     methods:{
@@ -130,31 +149,52 @@ export default {
             setTimeout(() => {
                 this.updateTemp = false
             }, 2000)
-        }
+        },
+        // mouseOver(event){
+        //     this.posX = event.clientX
+        //     this.posY = event.clientY
+        //     if(this.posX < 1150  ){
+        //         this.$emit('prev-slide')
+        //         this.$refs.card.addEventListener('click', () => {
+        //             console.log('click')
+        //         })
+        //         setTimeout(() => {
+        //                 this.posX = 0
+        //         },300)
+        //     }
+        //     if(this.posX > 1450 ){
+                
+        //         this.$emit('next-slide')
+        //         setTimeout(() => {
+        //                 this.posX = 0
+        //         },300)
+        //     }
+        //     // console.log(event.clientX, event.clientY)
+        // }
     },
     computed: {
         degArrowWind(){
-            let where = 0 + this.info.wind['deg']
+            let where = 0 + this.currentCard.wind['deg']
             return  'rotate('+where+'deg)'
         },
         toUpTemp(){
-            let temp = this.info.main['temp']
+            let temp = this.currentCard.main['temp']
             return Math.round(temp)
         },
         feelLike(){
-            let temp = this.info.main['feels_like']
+            let temp = this.currentCard.main['feels_like']
             return Math.round(temp)
         },
         minTemp(){
-            let temp = this.info.main['temp_min']
+            let temp = this.currentCard.main['temp_min']
             return Math.round(temp)
         },
         maxTemp(){
-            let temp = this.info.main['temp_max']
+            let temp = this.currentCard.main['temp_max']
             return Math.round(temp)
         },
         descrTemp(){
-            let descr = this.info.weather[0].description
+            let descr = this.currentCard.weather[0].description
             descr = descr.split('')
             let a = String(descr[0]).toUpperCase()
             descr.splice(0,1)
@@ -162,13 +202,23 @@ export default {
             return descr.join('')
         },
         visability(){
-            return this.info.visibility / 1000
+            return this.currentCard.visibility / 1000
         },
         latitude(){
-            return this.info.coord.lat
+            return this.currentCard.coord.lat
         },
         longitude(){
-            return this.info.coord.lon
+            return this.currentCard.coord.lon
+        },
+        computedPos(){
+            let transformX 
+            if(this.posX < 1150 ){
+                transformX = -this.posX / 10
+            }
+            if(this.posX > 1450){
+                transformX = this.posX / 10
+            }
+            return `translateX(${transformX}px)`
         }
     }
 }
@@ -177,7 +227,24 @@ export default {
 <style scoped>
 .box{
     margin: 0 auto;
-    background-color: #f0ffff;
+    position: relative;
+}
+.cardis {
+    height: 300px;
+    transition: 0.5s all;
+}
+.card-delete{
+    position: absolute;
+    top: 15px;
+    right: 20px;
+}
+.divider{
+    position: absolute;
+    display: block;
+    height: 1px;
+    background-color: #2d8d91;
+    top: 0;
+    left: 0;
 }
 .wrapper-temp{
     display: grid;
@@ -246,4 +313,11 @@ export default {
 
 /* color: #f9bc0f;  if > 18 < 27 */
 
+
+
+
 </style>
+
+
+
+
