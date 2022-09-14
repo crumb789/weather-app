@@ -69,6 +69,7 @@
                   :item='item'
                   :index='index'
                   :currentCard='currentCard'
+                  @swipe-card-to-dot='swipeCardToDot'
                   >
 
                   </slider-dot>
@@ -108,14 +109,14 @@
 </template>
 
 <script>
-import HeadComp from '@/components/HeadComp.vue'
-import CardCity from '@/components/CardCity.vue'
-import FormNewCity from '@/components/FormNewCity.vue'
+import HeadComp from '@/components/Header/HeadComp.vue'
+import CardCity from '@/components/CardGeo/CardCity.vue'
+import FormNewCity from '@/components/FormCity/FormNewCity.vue'
 import PlaceholderComp from '@/components/PlaceholderComp.vue'
 import ErrorCard from '@/components/ErrorCard.vue'
 import CityLoad from '@/components/CityLoad.vue'
-import CardEn from '@/components/CardEn.vue'
-import FooterComp from '@/components/FooterComp.vue'
+import CardEn from '@/components/CardGeo/CardEn.vue'
+import FooterComp from '@/components/Footer/FooterComp.vue'
 import LoaderCard from '@/components/LoaderCard.vue'
 import CardsListRu from '@/components/CardsListRu.vue'
 
@@ -260,6 +261,9 @@ export default {
     },
     nextCard(){
      (this.countCard == this.infoList.length - 1) ? this.countCard = 0 : this.countCard++
+    },
+    swipeCardToDot(index){
+      this.countCard = index
     }
 
   },

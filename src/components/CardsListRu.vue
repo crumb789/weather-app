@@ -235,8 +235,8 @@ export default {
 }
 .card-delete{
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 18px;
+    right: 10px;
 }
 .divider{
     position: absolute;

@@ -1,5 +1,7 @@
 <template>
-    <div class="slide-dot" :class="{active: item.id == currentCard.id}">
+    <div class="slide-dot" 
+        @click="$emit('swipe-card-to-dot', index)"
+        :class="{active: item.id == currentCard.id}">
         
     </div>
 </template>
