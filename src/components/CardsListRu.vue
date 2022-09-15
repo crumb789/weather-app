@@ -10,10 +10,15 @@
             <div @click="$emit('update-info')" class="name title is-4">
                 {{currentCard.name}} {{currentCard.sys['country']}}
                 <i @click="updateTempLaunch" :style="{cursor: 'pointer'}" :class="{rotate: updateTemp}" class="bi bi-arrow-clockwise"></i>
-                <div v-if="moreInfoOpen" 
-                    @click="$emit('delete-this-card', currentCard.id)"
+                <div v-if="moreInfoOpen && bookmark" 
+                    @click="deletingCard(currentCard.id)"
                     class="card-delete" title="Удалить" >
-                    <i class="bi bi-bookmark-check" :style="{color: '#7c7c7c'}"></i>
+                    <i class="bi bi-bookmark-check" :style="{color: '#ab3939'}"></i>
+                </div>
+                <div v-if="moreInfoOpen && bookmark == false" 
+                    @click="this.bookmark = true"
+                    class="card-delete-cancel" title="Удалить" >
+                    <i class="bi bi-bookmark" :style="{color: '#ab3939'}"></i>
                 </div>
             </div>
 
@@ -140,7 +145,8 @@ export default {
             posY: undefined,
             prevCard: {
                 transform: `translateX(100px)`
-            }
+            },
+            bookmark: true,
         }
     },
     methods:{
@@ -150,6 +156,40 @@ export default {
                 this.updateTemp = false
             }, 2000)
         },
+        deletingCard(cardId){
+                this.$emit('delete-this-card', cardId)
+
+            // this.bookmark = false
+
+            // setTimeout(() => {
+                
+            // }, 3000);
+
+
+            // let timer = () => {
+            //     if(this.bookmark == true){
+            //         console.log('book true')
+            //         clearTimeout(timer, tew)
+            //     }
+            //     this.$emit('delete-this-card', cardId)
+            //     console.log('book false')
+            // }
+
+            // let timer = setTimeout((tew)=> {
+            //     tew = this.bookmark
+            //     if(this.bookmark == true){
+            //         console.log('book true')
+            //         clearTimeout(timer, tew)
+            //     }
+            //     this.$emit('delete-this-card', cardId)
+            //     console.log('book false')
+            // },3000)
+
+
+
+            
+
+        }
         // mouseOver(event){
         //     this.posX = event.clientX
         //     this.posY = event.clientY
@@ -233,7 +273,12 @@ export default {
     height: 300px;
     transition: 0.5s all;
 }
-.card-delete{
+.card-delete {
+    position: absolute;
+    top: 18px;
+    right: 10px;
+}
+.card-delete-cancel{
     position: absolute;
     top: 18px;
     right: 10px;

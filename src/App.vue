@@ -21,13 +21,13 @@
 
         v-if="cardLoad && lang === 'ru' "
         @update-info='getDataFromLocation'
-        @change-units='changeUnits'>
+        @change-units='changeUnits(howCard = "geo" )'>
       </card-city>   
 <!-- en card  geo-->
       <card-en :info='geoInfo' :units='units'
         v-if="cardLoad && lang === 'en' "
         @update-info='getDataFromLocation'
-        @change-units='changeUnits'>
+        @change-units='changeUnits(howCard = "geo" )'>
       </card-en>
     <!-- load last location   -->
 
@@ -51,8 +51,8 @@
               @delete-this-card='deleteCardFromInfoList'
               @prev-slide='prevCard'
               @next-slide="nextCard"
-              @update-info='getData(currentCard.name)'
-              @change-units='changeUnits'>
+              @update-info='getData(currentCard.name, countCard)'
+              @change-units='changeUnits(howCard = "currentCard", currentCard.name, countCard )'>
               <button @click="prevCard" v-show="infoList.length > 1"
                 id="btn-prev" class="button is-rounded is-ghost">
                 <i class="bi bi-chevron-left"></i>
@@ -169,14 +169,13 @@ export default {
     }
   },
   methods:{
-  async  getData(city){
+  async  getData(city, indexCurrentCard){
       // Формируем url для GET запроса
       // city = this.city
       let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
-      // console.log(url)
       axios.get(url)
             .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             this.info = res.data
                   
               if(this.infoList.length == 0){
@@ -187,7 +186,7 @@ export default {
                 this.infoList.forEach(item => arrId.push(item.id))
 
                 if(arrId.includes(this.info.id)){
-                  return false
+                  return this.infoList[indexCurrentCard] = this.info
                 } else this.infoList.unshift(this.info)
                 this.countCard = 0
                 // console.log(arrId)
@@ -220,7 +219,6 @@ export default {
     let lon = this.geoData[0].longitude
       let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=${this.units}&lang=${this.lang}`
       
-
       axios.get(url)
             .then(res =>{
               // this.info = res.data
@@ -241,10 +239,16 @@ export default {
       // this.getData()
       this.getDataFromLocation()
     },
-    changeUnits(){
+    changeUnits(howCard, nameCity, indexCurrentCard){
       (this.units === 'metric') ? this.units = 'imperial' : this.units = 'metric'
       // this.getData()
-      this.getDataFromLocation()
+      if(howCard == 'geo'){
+        this.getDataFromLocation()
+      }
+      if(howCard == 'currentCard'){
+        this.getData(nameCity, indexCurrentCard)
+        
+      }
 
       
     },
