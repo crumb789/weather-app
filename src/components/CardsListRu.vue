@@ -193,27 +193,6 @@ export default {
             this.bookmark = true
             this.timerLeft = 3
         }
-        // mouseOver(event){
-        //     this.posX = event.clientX
-        //     this.posY = event.clientY
-        //     if(this.posX < 1150  ){
-        //         this.$emit('prev-slide')
-        //         this.$refs.card.addEventListener('click', () => {
-        //             console.log('click')
-        //         })
-        //         setTimeout(() => {
-        //                 this.posX = 0
-        //         },300)
-        //     }
-        //     if(this.posX > 1450 ){
-                
-        //         this.$emit('next-slide')
-        //         setTimeout(() => {
-        //                 this.posX = 0
-        //         },300)
-        //     }
-        //     // console.log(event.clientX, event.clientY)
-        // }
     },
     computed: {
         degArrowWind(){

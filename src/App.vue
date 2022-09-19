@@ -260,7 +260,7 @@ export default {
 
     deleteCardFromInfoList(id){
       this.infoList = this.infoList.filter(item => item.id !== id)
-      
+      this.countCard = 0
     },
     changeMoreInfoOpen(moreInfoOpen){
       this.moreCardInfoOpen = moreInfoOpen
