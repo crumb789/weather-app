@@ -40,6 +40,7 @@ export default {
     border-radius: 100%;
     transition: 0.3s all;
     opacity: 0.5;
+    cursor: pointer;
 }
 
 .active{

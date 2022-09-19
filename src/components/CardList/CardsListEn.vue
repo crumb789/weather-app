@@ -1,9 +1,29 @@
 <template>
     <div class="cardis  animate__animated animate__zoomIn">
-        <div class="box mt-4 " :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px', backgroundColor: '#f4fdfd' }" >
+        <slot></slot>
+        <div @click="mouseOver" class="box mt-4 " ref="card"
+            
+            :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px', transform: computedPos}" >
+            <!-- <div class="divider" :style="{width: widthLine + '%'}">
+            </div> -->
+
             <div @click="$emit('update-info')" class="name title is-4">
-                <i class="bi bi-geo-alt"></i>   {{info.name}} {{info.sys['country']}}
+                {{currentCard.name}} {{currentCard.sys['country']}}
                 <i @click="updateTempLaunch" :style="{cursor: 'pointer'}" :class="{rotate: updateTemp}" class="bi bi-arrow-clockwise"></i>
+
+                <div v-if="moreInfoOpen && bookmark" 
+                    @click="deletingCard(currentCard.id)"
+                    class="card-delete" 
+                    title="Удалить" >
+                    <i class="bi bi-bookmark-check" :style="{color: '#ab3939'}"></i>
+                </div>
+                <div v-if="moreInfoOpen && bookmark == false" 
+                    @click="clearTimer"
+                    class="card-delete-cancel" 
+                    title="Delete" >
+                    <i class="bi bi-bookmark" :style="{color: '#ab3939'}"></i>
+                    <span class="card-delete-cancel_timer">{{timerLeft}}</span>
+                </div>                
             </div>
 
             <div class="weather ">
@@ -24,7 +44,6 @@
                         red: toUpTemp > 81}"  class="weather-temp title is-1">
                         {{toUpTemp}}<span>°F</span>
                     </div>
-
 
                     <div class="weather-descr ">
                         {{descrTemp}}
@@ -54,26 +73,25 @@
                     </div>    
 
                     <div class="weather-temp-feel">
-                        Feel like {{feelLike}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
-                    </div>    
+                        Feel like {{feelLike}}<span v-if="units === 'metric'">°C</span>
+                        <span v-else>°F</span>
+                    </div>  
                     <div class="weather-wind" v-if="units === 'metric'">
-                        <span class="mr-2">Wind {{info.wind['speed']}} m/s 
+                        <span class="mr-2">Wind {{currentCard.wind['speed']}} m/s 
                             <svg :style="{transform: degArrowWind, fontSize: 20 + 'px', color: '#0065bb'}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class=" bi bi-arrow-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
                         </svg> 
-                        </span>                     
-                        
-                    </div> 
-                    
+                        </span>      
+                    </div>
+
                     <div class="weather-wind" v-else>
-                        <span class="mr-2">Wind {{info.wind['speed']}} mph
+                        <span class="mr-2">Wind {{currentCard.wind['speed']}} mph
                             <svg :style="{transform: degArrowWind, fontSize: 20 + 'px', color: '#0065bb'}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class=" bi bi-arrow-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
                         </svg> 
                         </span>
-                        
-                        
                     </div> 
+
                 </div> 
                 <div class="wrapper-more animate__animated animate__flipInX" v-if="moreInfoOpen">
                     <div class="weather-temp-min ">
@@ -83,10 +101,10 @@
                         Max {{maxTemp}}<span v-if="units === 'metric'">°C</span><span v-else>°F</span>
                     </div>
                     <div class="weather-pressure">
-                        Pressure {{info.main['pressure']}} hPa 
+                        Pressure {{currentCard.main['pressure']}} hPa 
                     </div>
                     <div class="weather-humidity">
-                        Humidity {{info.main['humidity']}} %  
+                        Humidity {{currentCard.main['humidity']}} %  
                     </div>
                     <div class="weather-visibility">
                         Visibility {{visability}} km 
@@ -99,10 +117,12 @@
                     </div>
                 </div>
             </div>
-            <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
-            <div  class="units" @click="$emit('change-units')">
+            <i :style="moreIcon" @click="changeMoreInfo" class="bi bi-three-dots"></i>
+            <div class="units" @click="$emit('change-units')">
                 {{units}}
             </div>
+            <!-- {{posX}}  {{posY}}
+            {{computedPos}} -->
         </div>
         
     </div>
@@ -112,9 +132,9 @@
 
 <script>
 export default {
-    name:'card-city-en',
+    name:'card-list-ru',
     props:{
-        info:{
+        currentCard:{
             type: Object
         },
         units:{
@@ -131,7 +151,16 @@ export default {
                 cursor: 'pointer'
             },
             moreInfoOpen: false,
-            updateTemp: false
+            updateTemp: false,
+            posX: undefined,
+            posY: undefined,
+            prevCard: {
+                transform: `translateX(100px)`
+            },
+            bookmark: true,
+            timer: null,
+            interval: null,
+            timerLeft: 3
         }
     },
     methods:{
@@ -140,31 +169,63 @@ export default {
             setTimeout(() => {
                 this.updateTemp = false
             }, 2000)
+        },
+        changeMoreInfo(){
+            this.moreInfoOpen = !this.moreInfoOpen
+            this.$emit('change-more-info-open', this.moreInfoOpen)
+        },
+        // deletingCard(cardId){
+        //         this.$emit('delete-this-card', cardId)
+        // }
+        deletingCard(cardId){
+            this.bookmark = false
+
+            this.interval = setInterval(() => {
+              this.timerLeft--  
+            },1000)
+
+            this.timer = setTimeout(() => {
+                this.$emit('delete-this-card', cardId)
+                this.bookmark = true
+                clearInterval(this.interval)
+                this.timerLeft = 3
+                this.moreInfoOpen = false
+            }, 3000);
+
+
+        },
+        clearTimer(){
+            clearTimeout(this.timer)
+            clearInterval(this.interval)
+            this.timer = null
+            this.interval = null
+            this.bookmark = true
+            this.timerLeft = 3
         }
     },
     computed: {
         degArrowWind(){
-            let where = 0 + this.info.wind['deg']
+            let where = 0 + this.currentCard.wind['deg']
             return  'rotate('+where+'deg)'
         },
         toUpTemp(){
-            let temp = this.info.main['temp']
+            let temp = this.currentCard.main['temp']
             return Math.round(temp)
         },
         feelLike(){
-            let temp = this.info.main['feels_like']
+            let temp = this.currentCard.main['feels_like']
             return Math.round(temp)
         },
         minTemp(){
-            let temp = this.info.main['temp_min']
+            let temp = this.currentCard.main['temp_min']
             return Math.round(temp)
         },
         maxTemp(){
-            let temp = this.info.main['temp_max']
+            let temp = this.currentCard.main['temp_max']
             return Math.round(temp)
         },
         descrTemp(){
-            let descr = this.info.weather[0].description
+            let descr = this.currentCard.weather[0].description
             descr = descr.split('')
             let a = String(descr[0]).toUpperCase()
             descr.splice(0,1)
@@ -172,13 +233,23 @@ export default {
             return descr.join('')
         },
         visability(){
-            return this.info.visibility / 1000
+            return this.currentCard.visibility / 1000
         },
         latitude(){
-            return this.info.coord.lat
+            return this.currentCard.coord.lat
         },
         longitude(){
-            return this.info.coord.lon
+            return this.currentCard.coord.lon
+        },
+        computedPos(){
+            let transformX 
+            if(this.posX < 1150 ){
+                transformX = -this.posX / 10
+            }
+            if(this.posX > 1450){
+                transformX = this.posX / 10
+            }
+            return `translateX(${transformX}px)`
         }
     }
 }
@@ -187,7 +258,59 @@ export default {
 <style scoped>
 .box{
     margin: 0 auto;
-    background-color: #f0ffff;
+    position: relative;
+}
+.cardis {
+    height: 300px;
+    transition: 0.5s all;
+}
+.card-delete {
+    position: absolute;
+    top: 18px;
+    right: 10px;
+    cursor: pointer;
+}
+.card-delete-cancel{
+    position: absolute;
+    top: 18px;
+    cursor: pointer;
+    right: 10px;
+    animation: flip 1s infinite linear;
+}
+.card-delete-cancel_timer{
+    position: absolute;
+    font-weight: 100;
+    font-size: 14px;
+    left: 50%;
+    top: 44%;
+    transform: translate(-50%, -50%);
+}
+@keyframes flip{
+    0%{
+        transform: rotate(0deg);
+    }
+    25%{
+        transform: rotate(-30deg);
+
+    }
+    75%{
+        transform: rotate(30deg);
+    }
+    100%{
+        transform: rotate(0deg);
+    }
+}
+
+
+
+
+.divider{
+    position: absolute;
+    display: block;
+    height: 1px;
+    background-color: #2d8d91;
+    top: 0;
+    left: 0;
 }
 .wrapper-temp{
     display: grid;
@@ -254,6 +377,15 @@ export default {
     }
 }
 
+
+
 /* color: #f9bc0f;  if > 18 < 27 */
 
+
+
+
 </style>
+
+
+
+

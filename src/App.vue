@@ -29,7 +29,7 @@
         @update-info='getDataFromLocation'
         @change-units='changeUnits(howCard = "geo" )'>
       </card-en>
-    <!-- load last location   -->
+  <!-- load last location   -->
 
       <city-load v-if="!cardLoad && false" 
         :cityChanged="cityChanged"
@@ -46,7 +46,10 @@
               </cards-list-ru>
       </div>
         
-      <cards-list-ru v-if="currentCard"  :units='units'
+
+
+<!--         card list ru -->
+      <cards-list-ru v-if="currentCard && lang === 'ru'"  :units='unitsToList'
               :currentCard='currentCard'
               @change-more-info-open='changeMoreInfoOpen'
               @delete-this-card='deleteCardFromInfoList'
@@ -77,6 +80,38 @@
               </slider-dots-list>
       </cards-list-ru>
         
+
+      <!--card list en -->
+
+      <cards-list-en v-if="currentCard && lang === 'en' "  :units='unitsToList'
+              :currentCard='currentCard'
+              @change-more-info-open='changeMoreInfoOpen'
+              @delete-this-card='deleteCardFromInfoList'
+              @prev-slide='prevCard'
+              @next-slide="nextCard"
+              @update-info='getData(currentCard.name, countCard)'
+              @change-units='changeUnits(howCard = "currentCard", currentCard.name, countCard )'>
+              <button @click="prevCard" v-show="infoList.length > 1 && !moreCardInfoOpen"
+                id="btn-prev" class="button is-rounded is-ghost">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button @click="nextCard" v-show="infoList.length > 1 && !moreCardInfoOpen"
+                id="btn-next" class="button is-rounded is-ghost ">
+                  <i class="bi bi-chevron-right"></i>
+              </button>
+
+
+              <slider-dots-list>
+                  <slider-dot v-for="(item, index) in infoList" 
+                  :key="item.id"
+                  :item='item'
+                  :index='index'
+                  :currentCard='currentCard'
+                  @swipe-card-to-dot='swipeCardToDot'
+                  >
+                  </slider-dot>
+              </slider-dots-list>
+      </cards-list-en>
 
       
 
@@ -119,7 +154,9 @@ import CityLoad from '@/components/CityLoad.vue'
 import CardEn from '@/components/CardGeo/CardEn.vue'
 import FooterComp from '@/components/Footer/FooterComp.vue'
 import LoaderCard from '@/components/LoaderCard.vue'
-import CardsListRu from '@/components/CardsListRu.vue'
+import CardsListRu from '@/components/CardList/CardsListRu.vue'
+import CardsListEn from '@/components/CardList/CardsListEn.vue'
+
 
 import SliderDotsList from '@/components/UI/SliderDotsList.vue'
 import SliderDot from '@/components/UI/SliderDot.vue'
@@ -143,6 +180,7 @@ export default {
     FooterComp,
     LoaderCard,
     CardsListRu,
+    CardsListEn,
     SliderDotsList,
     SliderDot
   },
@@ -165,19 +203,27 @@ export default {
       geoInfo: [],
 
       infoList: [],
+      unitsToList: 'metric',
       countCard: 0,
       moreCardInfoOpen: false
 
     }
   },
   methods:{
-  async  getData(city, indexCurrentCard){
+  async  getData(city, indexCurrentCard, unitsToList){
       // Формируем url для GET запроса
       // city = this.city
-      let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
+      if(unitsToList){
+        var urlToList = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${unitsToList}&appid=${this.apiKey}`
+      } else{
+        var urlToGeo = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
+
+      }
+      let url
+      (unitsToList) ? url = urlToList : url = urlToGeo
       axios.get(url)
             .then(res => {
-            // console.log(res.data);
+            console.log(res.data);
             this.info = res.data
                   
               if(this.infoList.length == 0){
@@ -240,15 +286,26 @@ export default {
       (this.lang === 'ru') ? this.lang = 'en' : this. lang = 'ru'
       // this.getData()
       this.getDataFromLocation()
+
+
+      for(let i = 0; i < this.infoList.length; i++){
+          this.getData(this.infoList[i].name, i, this.unitsToList)
+        }
     },
-    changeUnits(howCard, nameCity, indexCurrentCard){
-      (this.units === 'metric') ? this.units = 'imperial' : this.units = 'metric'
+    changeUnits(howCard, nameCity, indexCurrentCard){      
       // this.getData()
       if(howCard == 'geo'){
+        (this.units === 'metric') ? this.units = 'imperial' : this.units = 'metric' ;        
         this.getDataFromLocation()
       }
+
       if(howCard == 'currentCard'){
-        this.getData(nameCity, indexCurrentCard)
+        (this.unitsToList === 'metric') ? this.unitsToList = 'imperial' : this.unitsToList = 'metric';
+                
+        for(let i = 0; i < this.infoList.length; i++){
+          this.getData(this.infoList[i].name, i, this.unitsToList)
+        }
+        /*  */this.getData(nameCity, indexCurrentCard, this.unitsToList)
         
       }
 
