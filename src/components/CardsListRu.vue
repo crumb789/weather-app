@@ -3,23 +3,25 @@
         <slot></slot>
         <div @click="mouseOver" class="box mt-4 " ref="card"
             
-            :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px', cursor: 'pointer', transform: computedPos}" >
+            :style="{maxWidth: 500 +'px', position: 'relative', minHeight: 240 + 'px', transform: computedPos}" >
             <!-- <div class="divider" :style="{width: widthLine + '%'}">
             </div> -->
 
             <div @click="$emit('update-info')" class="name title is-4">
                 {{currentCard.name}} {{currentCard.sys['country']}}
                 <i @click="updateTempLaunch" :style="{cursor: 'pointer'}" :class="{rotate: updateTemp}" class="bi bi-arrow-clockwise"></i>
+
                 <div v-if="moreInfoOpen && bookmark" 
                     @click="deletingCard(currentCard.id)"
                     class="card-delete" title="Удалить" >
                     <i class="bi bi-bookmark-check" :style="{color: '#ab3939'}"></i>
                 </div>
                 <div v-if="moreInfoOpen && bookmark == false" 
-                    @click="this.bookmark = true"
-                    class="card-delete-cancel" title="Удалить" >
+                    @click="clearTimer"
+                    class="card-delete-cancel" title="Delete" >
                     <i class="bi bi-bookmark" :style="{color: '#ab3939'}"></i>
-                </div>
+                    <span class="card-delete-cancel_timer">{{timerLeft}}</span>
+                </div>                
             </div>
 
             <div class="weather ">
@@ -106,7 +108,7 @@
                     </div>
                 </div>
             </div>
-            <i :style="moreIcon" @click="moreInfoOpen = !moreInfoOpen" class="bi bi-three-dots"></i>
+            <i :style="moreIcon" @click="changeMoreInfo" class="bi bi-three-dots"></i>
             <div class="units" @click="$emit('change-units')">
                 {{units}}
             </div>
@@ -147,6 +149,9 @@ export default {
                 transform: `translateX(100px)`
             },
             bookmark: true,
+            timer: null,
+            interval: null,
+            timerLeft: 3
         }
     },
     methods:{
@@ -156,39 +161,37 @@ export default {
                 this.updateTemp = false
             }, 2000)
         },
+        changeMoreInfo(){
+            this.moreInfoOpen = !this.moreInfoOpen
+            this.$emit('change-more-info-open', this.moreInfoOpen)
+        },
+        // deletingCard(cardId){
+        //         this.$emit('delete-this-card', cardId)
+        // }
         deletingCard(cardId){
+            this.bookmark = false
+
+            this.interval = setInterval(() => {
+              this.timerLeft--  
+            },1000)
+
+            this.timer = setTimeout(() => {
                 this.$emit('delete-this-card', cardId)
-
-            // this.bookmark = false
-
-            // setTimeout(() => {
-                
-            // }, 3000);
-
-
-            // let timer = () => {
-            //     if(this.bookmark == true){
-            //         console.log('book true')
-            //         clearTimeout(timer, tew)
-            //     }
-            //     this.$emit('delete-this-card', cardId)
-            //     console.log('book false')
-            // }
-
-            // let timer = setTimeout((tew)=> {
-            //     tew = this.bookmark
-            //     if(this.bookmark == true){
-            //         console.log('book true')
-            //         clearTimeout(timer, tew)
-            //     }
-            //     this.$emit('delete-this-card', cardId)
-            //     console.log('book false')
-            // },3000)
+                this.bookmark = true
+                clearInterval(this.interval)
+                this.timerLeft = 3
+                this.moreInfoOpen = false
+            }, 3000);
 
 
-
-            
-
+        },
+        clearTimer(){
+            clearTimeout(this.timer)
+            clearInterval(this.interval)
+            this.timer = null
+            this.interval = null
+            this.bookmark = true
+            this.timerLeft = 3
         }
         // mouseOver(event){
         //     this.posX = event.clientX
@@ -282,7 +285,35 @@ export default {
     position: absolute;
     top: 18px;
     right: 10px;
+    animation: flip 1s infinite linear;
 }
+.card-delete-cancel_timer{
+    position: absolute;
+    font-weight: 100;
+    font-size: 14px;
+    left: 50%;
+    top: 44%;
+    transform: translate(-50%, -50%);
+}
+@keyframes flip{
+    0%{
+        transform: rotate(0deg);
+    }
+    25%{
+        transform: rotate(-30deg);
+
+    }
+    75%{
+        transform: rotate(30deg);
+    }
+    100%{
+        transform: rotate(0deg);
+    }
+}
+
+
+
+
 .divider{
     position: absolute;
     display: block;
@@ -355,6 +386,8 @@ export default {
         transform: rotateZ(360deg);
     }
 }
+
+
 
 /* color: #f9bc0f;  if > 18 < 27 */
 

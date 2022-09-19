@@ -48,16 +48,17 @@
         
       <cards-list-ru v-if="currentCard"  :units='units'
               :currentCard='currentCard'
+              @change-more-info-open='changeMoreInfoOpen'
               @delete-this-card='deleteCardFromInfoList'
               @prev-slide='prevCard'
               @next-slide="nextCard"
               @update-info='getData(currentCard.name, countCard)'
               @change-units='changeUnits(howCard = "currentCard", currentCard.name, countCard )'>
-              <button @click="prevCard" v-show="infoList.length > 1"
+              <button @click="prevCard" v-show="infoList.length > 1 && !moreCardInfoOpen"
                 id="btn-prev" class="button is-rounded is-ghost">
                 <i class="bi bi-chevron-left"></i>
               </button>
-              <button @click="nextCard" v-show="infoList.length > 1"
+              <button @click="nextCard" v-show="infoList.length > 1 && !moreCardInfoOpen"
                 id="btn-next" class="button is-rounded is-ghost ">
                   <i class="bi bi-chevron-right"></i>
               </button>
@@ -164,7 +165,8 @@ export default {
       geoInfo: [],
 
       infoList: [],
-      countCard: 0
+      countCard: 0,
+      moreCardInfoOpen: false
 
     }
   },
@@ -258,6 +260,10 @@ export default {
 
     deleteCardFromInfoList(id){
       this.infoList = this.infoList.filter(item => item.id !== id)
+      
+    },
+    changeMoreInfoOpen(moreInfoOpen){
+      this.moreCardInfoOpen = moreInfoOpen
     },
     prevCard(){
       (this.countCard == 0) ? this.countCard = this.infoList.length - 1 : this.countCard--
@@ -288,7 +294,11 @@ export default {
     setTimeout(()=>{
       if(this.geoData[0].latitude !== ''){
         this.getDataFromLocation()
+
       }  
+      if(this.infoList.length > 0){
+        this.getData(this.infoList[0].name)
+      } 
 
     }, 10)
     
