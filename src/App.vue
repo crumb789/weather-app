@@ -89,7 +89,7 @@
               @delete-this-card='deleteCardFromInfoList'
               @prev-slide='prevCard'
               @next-slide="nextCard"
-              @update-info='getData(currentCard.name, countCard)'
+              @update-info='getData(currentCard.name, countCard, unitsToList)'
               @change-units='changeUnits(howCard = "currentCard", currentCard.name, countCard )'>
               <button @click="prevCard" v-show="infoList.length > 1 && !moreCardInfoOpen"
                 id="btn-prev" class="button is-rounded is-ghost">
@@ -215,6 +215,7 @@ export default {
       // city = this.city
       if(unitsToList){
         var urlToList = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${unitsToList}&appid=${this.apiKey}`
+        // console.log(urlToList)
       } else{
         var urlToGeo = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
 
@@ -223,7 +224,7 @@ export default {
       (unitsToList) ? url = urlToList : url = urlToGeo
       axios.get(url)
             .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             this.info = res.data
                   
               if(this.infoList.length == 0){
@@ -350,11 +351,17 @@ export default {
 
     setTimeout(()=>{
       if(this.geoData[0].latitude !== ''){
+
         this.getDataFromLocation()
 
       }  
       if(this.infoList.length > 0){
-        this.getData(this.infoList[0].name)
+        this.unitsToList === 'metric'
+
+        for(let i = 0; i < this.infoList.length; i++){
+          this.getData(this.infoList[i].name, i, this.unitsToList)
+        }
+        // this.getData(this.infoList[0].name)
       } 
 
     }, 10)
