@@ -245,9 +245,7 @@ export default {
               this.cardLoad = true
               this.errorShow = false
             }).catch((error=> {
-              // console.log(error)
               console.log(error)
-
               this.errorShow = true
             }))
     },
