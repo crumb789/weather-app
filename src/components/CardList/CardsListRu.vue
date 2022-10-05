@@ -268,12 +268,15 @@ export default {
     position: absolute;
     top: 18px;
     right: 10px;
+    cursor: pointer;
 }
 .card-delete-cancel{
     position: absolute;
     top: 18px;
     right: 10px;
     animation: flip 1s infinite linear;
+    cursor: pointer;
+    
 }
 .card-delete-cancel_timer{
     position: absolute;

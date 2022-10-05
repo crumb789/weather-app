@@ -55,7 +55,7 @@
               @delete-this-card='deleteCardFromInfoList'
               @prev-slide='prevCard'
               @next-slide="nextCard"
-              @update-info='getData(currentCard.name, countCard)'
+               @update-info='getData(currentCard.name, countCard, unitsToList)'
               @change-units='changeUnits(howCard = "currentCard", currentCard.name, countCard )'>
               <button @click="prevCard" v-show="infoList.length > 1 && !moreCardInfoOpen"
                 id="btn-prev" class="button is-rounded is-ghost">
@@ -422,6 +422,8 @@ export default {
 </script>
 
 <style>
+
+
 #app {
   font-family: 'Roboto Condensed', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -429,7 +431,6 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-
 }
 
 .main{
