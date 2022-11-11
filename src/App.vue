@@ -214,17 +214,21 @@ export default {
       // Формируем url для GET запроса
       // city = this.city
       if(unitsToList){
-        var urlToList = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${unitsToList}&appid=${this.apiKey}`
-        // console.log(urlToList)
-      } else{
-        var urlToGeo = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
+        var urlToList = `http://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${unitsToList}&appid=${this.apiKey}`
+        
 
+      } else{
+        var urlToGeo = `http://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`
+
+        
       }
+      
       let url
       (unitsToList) ? url = urlToList : url = urlToGeo
+      
       axios.get(url)
             .then(res => {
-            // console.log(res.data);
+            
             this.info = res.data
                   
               if(this.infoList.length == 0){
@@ -238,7 +242,7 @@ export default {
                   return this.infoList[indexCurrentCard] = this.info
                 } else this.infoList.unshift(this.info)
                 this.countCard = 0
-                // console.log(arrId)
+                
               }
               
               
@@ -266,7 +270,8 @@ export default {
   async  getDataFromLocation(){
     let lat = this.geoData[0].latitude
     let lon = this.geoData[0].longitude
-      let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=${this.units}&lang=${this.lang}`
+      let url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=${this.units}&lang=${this.lang}`
+      
       
       axios.get(url)
             .then(res =>{
@@ -341,7 +346,7 @@ export default {
       return name
     },
     currentCard(){
-      // console.log(this.infoList[this.countCard].id)
+      
       
         return (this.infoList) ? this.infoList[this.countCard] : console.log('false')
     }
