@@ -48,8 +48,11 @@
                         <div v-if="descrTemp === 'Thunderstorm' " class="weather-descr-icon">
                             <i class="bi bi-cloud-lightning-rain"></i>
                         </div>
-                        <div v-if="descrTemp === 'Fog' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Fog' || descrTemp === 'Mist' " class="weather-descr-icon">
                             <i class="bi bi-cloud-fog"></i>
+                        </div>
+                        <div v-if="descrTemp === 'Light snow' || descrTemp === 'Light shower snow'  || descrTemp === 'Snow' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-snow"></i>
                         </div>
                     </div>    
 

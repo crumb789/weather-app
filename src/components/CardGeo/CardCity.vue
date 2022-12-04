@@ -52,9 +52,13 @@
                         <div v-if="descrTemp === 'Гроза' " class="weather-descr-icon">
                             <i class="bi bi-cloud-lightning-rain"></i>
                         </div>
-                        <div v-if="descrTemp === 'Плотный туман' " class="weather-descr-icon">
+                        <div v-if="descrTemp === 'Плотный туман' || descrTemp === 'Туман' " class="weather-descr-icon">
                             <i class="bi bi-cloud-fog"></i>
                         </div>
+                        <div v-if="descrTemp === 'Небольшой снег' || descrTemp === 'Небольшой снегопад' || descrTemp === 'Снег' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-snow"></i>
+                        </div>
+                        
 
                         
                     </div>    
