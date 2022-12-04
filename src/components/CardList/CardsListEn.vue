@@ -70,6 +70,12 @@
                         <div v-if="descrTemp === 'Fog' " class="weather-descr-icon">
                             <i class="bi bi-cloud-fog"></i>
                         </div>
+                        <div v-if="descrTemp === 'Mist' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-fog"></i>
+                        </div>
+                        <div v-if="descrTemp === 'Light snow' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-snow"></i>
+                        </div>
                     </div>    
 
                     <div class="weather-temp-feel">

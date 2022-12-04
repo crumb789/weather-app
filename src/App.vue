@@ -216,7 +216,7 @@ export default {
       // city = this.city
       if(unitsToList){
         var urlToList = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${unitsToList}&appid=${this.apiKey}`
-        
+        console.log(urlToList)
 
       } else{
         var urlToGeo = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=${this.lang}&units=${this.units}&appid=${this.apiKey}`

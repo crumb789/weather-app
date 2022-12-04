@@ -68,6 +68,12 @@
                         <div v-if="descrTemp === 'Плотный туман' " class="weather-descr-icon">
                             <i class="bi bi-cloud-fog"></i>
                         </div>
+                        <div v-if="descrTemp === 'Туман' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-fog"></i>
+                        </div>
+                        <div v-if="descrTemp === 'Небольшой снег' " class="weather-descr-icon">
+                            <i class="bi bi-cloud-snow"></i>
+                        </div>
 
                         
                     </div>    
